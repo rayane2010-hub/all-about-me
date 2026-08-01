@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rayane — Combattant &amp; Développeur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --ink-2:#151517;
+    --canvas:#EDE7D9;
+    --canvas-dim:#B9B2A0;
+    --blood:#C1272D;
+    --gold:#C9A227;
+    --line: rgba(237,231,217,0.14);
+    --mono: 'JetBrains Mono', monospace;
+    --disp: 'Anton', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--canvas);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--blood); color:var(--canvas);}
+
+  :focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 clamp(20px, 5vw, 56px);
+  }
+
+  /* ---------- texture ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:5;
+    opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(11,11,12,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .brand{
+    font-family:var(--disp);
+    font-size:1.4rem;
+    letter-spacing:.06em;
+  }
+  .brand span{color:var(--blood);}
+  .navlinks{display:flex; gap:clamp(16px,3vw,36px);}
+  .navlinks a{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--canvas-dim);
+    transition:color .2s ease;
+  }
+  .navlinks a:hover{color:var(--gold);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:88vh;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-side{
+    position:relative;
+    padding:clamp(32px,6vw,72px);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    min-height:420px;
+  }
+  .hero-side.mma{
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(193,39,45,0.22), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(237,231,217,0.035) 0px, rgba(237,231,217,0.035) 2px, transparent 2px, transparent 26px),
+      var(--ink-2);
+    border-right:1px solid var(--line);
+  }
+  .hero-side.dev{
+    background:
+      radial-gradient(ellipse at 70% 80%, rgba(201,162,39,0.16), transparent 60%),
+      var(--ink);
+  }
+  .hero-side.dev::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(237,231,217,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(237,231,217,0.045) 1px, transparent 1px);
+    background-size:38px 38px;
+    mask-image:linear-gradient(to top, black, transparent 75%);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.75rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:14px;
+    position:relative; z-index:1;
+  }
+  .hero-side.dev .eyebrow{color:var(--blood);}
+  .hero-word{
+    font-family:var(--disp);
+    font-size:clamp(2.4rem, 6.4vw, 5rem);
+    line-height:.92;
+    letter-spacing:.01em;
+    position:relative; z-index:1;
+  }
+  .hero-sub{
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--canvas-dim);
+    margin-top:14px;
+    max-width:34ch;
+    position:relative; z-index:1;
+  }
+
+  .hero-center{
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    z-index:3;
+    text-align:center;
+    width:min(92vw, 620px);
+  }
+  .hero-name{
+    font-family:var(--disp);
+    font-size:clamp(3rem, 9vw, 7rem);
+    letter-spacing:.02em;
+    color:var(--canvas);
+    text-shadow:0 0 40px rgba(0,0,0,.6);
+  }
+  .hero-name em{
+    font-style:normal;
+    color:var(--blood);
+  }
+  .hero-tag{
+    font-family:var(--mono);
+    font-size:clamp(.8rem,1.6vw,1rem);
+    color:var(--gold);
+    letter-spacing:.08em;
+    margin-top:10px;
+    text-shadow:0 0 20px rgba(0,0,0,.8);
+  }
+  .hero-plate{
+    background:rgba(11,11,12,0.55);
+    border:1px solid var(--line);
+    backdrop-filter:blur(3px);
+    padding:22px 26px;
+    border-radius:2px;
+  }
+
+  /* ---------- section shell ---------- */
+  section{padding:clamp(64px,10vw,120px) 0;}
+  .section-head{
+    display:flex; align-items:baseline; gap:16px;
+    margin-bottom:44px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+  }
+  .section-tag{
+    font-family:var(--mono);
+    font-size:.75rem;
+    color:var(--blood);
+    letter-spacing:.14em;
+  }
+  .section-title{
+    font-family:var(--disp);
+    font-size:clamp(1.8rem,3.6vw,2.6rem);
+    letter-spacing:.01em;
+  }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap:56px;
+    align-items:start;
+  }
+  .about-grid p{
+    color:var(--canvas-dim);
+    font-size:1.02rem;
+    max-width:56ch;
+  }
+  .about-grid p + p{margin-top:16px;}
+  .about-grid strong{color:var(--canvas); font-weight:600;}
+
+  .quote{
+    font-family:var(--disp);
+    font-size:1.4rem;
+    line-height:1.3;
+    border-left:3px solid var(--gold);
+    padding-left:20px;
+    color:var(--canvas);
+  }
+
+  /* ---------- tale of the tape (signature element) ---------- */
+  .tape{
+    border:1px solid var(--line);
+    background:var(--ink-2);
+    position:relative;
+  }
+  .tape-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 22px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--canvas-dim);
+  }
+  .tape-head .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--blood);
+    display:inline-block; margin-right:8px;
+    box-shadow:0 0 8px var(--blood);
+  }
+  .tape-row{
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items:center;
+    padding:16px 22px;
+    border-bottom:1px solid var(--line);
+    gap:14px;
+  }
+  .tape-row:last-child{border-bottom:none;}
+  .tape-label{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-align:center;
+  }
+  .tape-val{font-size:.95rem;}
+  .tape-val.left{text-align:left; color:var(--canvas-dim);}
+  .tape-val.right{text-align:right; color:var(--canvas);}
+  .tape-val.right b{font-weight:700;}
+
+  /* ---------- stack / skills ---------- */
+  .stack{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-top:40px;
+  }
+  .stack-item{
+    background:var(--ink);
+    padding:20px 18px;
+    transition:background .2s ease;
+  }
+  .stack-item:hover{background:var(--ink-2);}
+  .stack-item .k{
+    font-family:var(--mono);
+    font-size:.68rem;
+    color:var(--blood);
+    letter-spacing:.08em;
+  }
+  .stack-item .v{
+    font-family:var(--disp);
+    font-size:1.1rem;
+    margin-top:6px;
+    letter-spacing:.01em;
+  }
+
+  /* ---------- projects ---------- */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .card{
+    background:var(--ink);
+    padding:28px;
+    display:flex; flex-direction:column; gap:12px;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .card:hover{background:var(--ink-2); transform:translateY(-3px);}
+  .card .round{
+    font-family:var(--mono);
+    font-size:.68rem;
+    color:var(--gold);
+    letter-spacing:.1em;
+  }
+  .card h3{
+    font-family:var(--disp);
+    font-size:1.3rem;
+    letter-spacing:.01em;
+  }
+  .card p{color:var(--canvas-dim); font-size:.92rem;}
+  .card .tags{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:auto; padding-top:10px;
+  }
+  .card .tags span{
+    font-family:var(--mono);
+    font-size:.66rem;
+    border:1px solid var(--line);
+    padding:4px 8px;
+    color:var(--canvas-dim);
+    letter-spacing:.04em;
+  }
+
+  /* ---------- contact ---------- */
+  .contact{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:56px;
+  }
+  .corner{
+    font-family:var(--disp);
+    font-size:clamp(2rem,5vw,3.4rem);
+    line-height:1.05;
+  }
+  .corner .hl{color:var(--blood);}
+  .contact-links{margin-top:28px; display:flex; flex-direction:column; gap:10px;}
+  .contact-links a{
+    font-family:var(--mono);
+    font-size:.95rem;
+    color:var(--canvas-dim);
+    border-bottom:1px solid transparent;
+    width:fit-content;
+    padding-bottom:2px;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .contact-links a:hover{color:var(--gold); border-color:var(--gold);}
+
+  form{display:flex; flex-direction:column; gap:16px;}
+  .field{display:flex; flex-direction:column; gap:8px;}
+  .field label{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--canvas-dim);
+  }
+  .field input, .field textarea{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--canvas);
+    padding:12px 14px;
+    font-family:var(--body);
+    font-size:.95rem;
+    border-radius:2px;
+  }
+  .field textarea{resize:vertical; min-height:100px;}
+  .field input:focus, .field textarea:focus{border-color:var(--gold);}
+  .btn{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    background:var(--blood);
+    color:var(--canvas);
+    border:none;
+    padding:14px 22px;
+    cursor:pointer;
+    width:fit-content;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn:hover{background:#a31f24; transform:translateY(-1px);}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 0;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--canvas-dim);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width: 820px){
+    .hero{grid-template-columns:1fr; min-height:auto;}
+    .hero-side{min-height:280px;}
+    .hero-side.mma{border-right:none; border-bottom:1px solid var(--line);}
+    .hero-center{position:relative; left:auto; top:auto; transform:none; margin:36px auto; width:92%;}
+    .about-grid{grid-template-columns:1fr;}
+    .contact{grid-template-columns:1fr;}
+    .tape-row{grid-template-columns:1fr; text-align:left; gap:4px;}
+    .tape-val.right{text-align:left;}
+    .tape-label{text-align:left;}
+    .navlinks{display:none;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">RAY<span>ANE</span></div>
+    <div class="navlinks">
+      <a href="#about">Profil</a>
+      <a href="#tape">Fiche</a>
+      <a href="#stack">Stack</a>
+      <a href="#projets">Projets</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" aria-label="Présentation">
+  <div class="hero-side mma">
+    <div class="eyebrow">Coin rouge — MMA</div>
+    <div class="hero-word">TATAMI</div>
+    <div class="hero-sub">Discipline, striking, jiu-jitsu. Ce qui se construit à la sueur ne se négocie pas.</div>
+  </div>
+  <div class="hero-side dev">
+    <div class="eyebrow">Coin bleu — Web Dev</div>
+    <div class="hero-word">CLAVIER</div>
+    <div class="hero-sub">HTML, CSS, JS et au-delà. Ce qui se construit ligne par ligne tient dans la durée.</div>
+  </div>
+
+  <div class="hero-center">
+    <div class="hero-plate">
+      <div class="hero-name">RAY<em>ANE</em></div>
+      <div class="hero-tag">COMBATTANT MMA — DÉVELOPPEUR WEB — ALGER</div>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <section id="about">
+    <div class="wrap about-grid">
+      <div>
+        <div class="section-head" style="border:none; padding:0; margin-bottom:20px;">
+          <span class="section-tag">01</span>
+          <span class="section-title">Profil</span>
+        </div>
+        <p>Je m'appelle <strong>Rayane</strong>, jeune Algérien, et je mène deux disciplines en parallèle : le <strong>MMA</strong> sur le tatami, et le <strong>développement web</strong> derrière l'écran. Deux terrains différents, une même exigence : progresser par la répétition, encaisser les échecs, et corriger.</p>
+        <p>Sur le tatami, j'apprends la gestion de la distance, le sang-froid sous pression, la lecture de l'adversaire. Derrière un clavier, j'apprends la rigueur du détail, la logique, et la patience de déboguer jusqu'à ce que ça tienne. Les deux se nourrissent l'une l'autre.</p>
+      </div>
+      <div class="quote">
+        « Un combat se gagne avant de monter sur le tatami. Un site se gagne avant d'écrire la première ligne. »
+      </div>
+    </div>
+  </section>
+
+  <section id="tape">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">02</span>
+        <span class="section-title">Fiche technique</span>
+      </div>
+
+      <div class="tape">
+        <div class="tape-head"><span><span class="dot"></span>Tale of the tape</span><span>RAYANE</span></div>
+        <div class="tape-row">
+          <div class="tape-val left">Striking, Grappling, Endurance</div>
+          <div class="tape-label">Discipline</div>
+          <div class="tape-val right"><b>MMA</b></div>
+        </div>
+        <div class="tape-row">
+          <div class="tape-val left">HTML · CSS · JavaScript</div>
+          <div class="tape-label">Stack</div>
+          <div class="tape-val right"><b>Front-end</b></div>
+        </div>
+        <div class="tape-row">
+          <div class="tape-val left">Rigueur, sang-froid, répétition</div>
+          <div class="tape-label">Points forts</div>
+          <div class="tape-val right"><b>Mental</b></div>
+        </div>
+        <div class="tape-row">
+          <div class="tape-val left">Alger, Algérie</div>
+          <div class="tape-label">Coin</div>
+          <div class="tape-val right"><b>Local</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">03</span>
+        <span class="section-title">Arsenal technique</span>
+      </div>
+      <p style="color:var(--canvas-dim); max-width:56ch;">Les outils que je travaille, comme on travaille une garde ou un enchaînement — jusqu'à ce que ce soit naturel.</p>
+      <div class="stack">
+        <div class="stack-item"><div class="k">Structure</div><div class="v">HTML5</div></div>
+        <div class="stack-item"><div class="k">Style</div><div class="v">CSS3</div></div>
+        <div class="stack-item"><div class="k">Logique</div><div class="v">JavaScript</div></div>
+        <div class="stack-item"><div class="k">Responsive</div><div class="v">Mobile-first</div></div>
+        <div class="stack-item"><div class="k">Discipline</div><div class="v">MMA</div></div>
+        <div class="stack-item"><div class="k">Mental</div><div class="v">Sang-froid</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projets">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">04</span>
+        <span class="section-title">Projets</span>
+      </div>
+      <p style="color:var(--canvas-dim); max-width:60ch; margin-bottom:30px;">Exemples à personnaliser avec tes vrais projets, titres et descriptions.</p>
+      <div class="cards">
+        <div class="card">
+          <span class="round">Round 01</span>
+          <h3>Portfolio personnel</h3>
+          <p>Ce site même : une identité visuelle qui mêle l'univers du combat et celui du code.</p>
+          <div class="tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+        </div>
+        <div class="card">
+          <span class="round">Round 02</span>
+          <h3>Suivi d'entraînement</h3>
+          <p>Une idée d'app pour logger les séances de MMA : rounds, techniques travaillées, sensations.</p>
+          <div class="tags"><span>JavaScript</span><span>LocalStorage</span></div>
+        </div>
+        <div class="card">
+          <span class="round">Round 03</span>
+          <h3>Page club / événement</h3>
+          <p>Une landing page pour un club de MMA ou un événement, claire et rapide sur mobile.</p>
+          <div class="tags"><span>HTML</span><span>CSS</span><span>Responsive</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <div>
+        <div class="corner">Prêt à <span class="hl">échanger</span> ou à <span class="hl">collaborer</span> ?</div>
+        <div class="contact-links">
+          <a href="mailto:rayane@example.com">rayane@example.com</a>
+          <a href="#">Instagram — @rayane</a>
+          <a href="#">GitHub — /rayane</a>
+        </div>
+      </div>
+      <form onsubmit="event.preventDefault(); this.reset(); alert('Message envoyé (démo statique — à connecter à un vrai service).');">
+        <div class="field">
+          <label for="name">Nom</label>
+          <input id="name" name="name" type="text" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button class="btn" type="submit">Envoyer le message</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Rayane — Alger, Algérie</span>
+  <span>Coin rouge / Coin bleu</span>
+</footer>
+
+</body>
+</html>
